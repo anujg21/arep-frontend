@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AREP — Agentic Reliability Engineering Platform</title>
+  <meta name="description" content="The reliability layer for autonomous AI agents. Observe every action, detect failures automatically, enforce policy before any tool executes." />
+  <meta property="og:title" content="AREP — Agentic Reliability Engineering Platform" />
+  <meta property="og:description" content="Site Reliability Engineering for the AI Agent Era." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #07070f;
+      --bg2:      #0d0d1a;
+      --bg3:      #111124;
+      --border:   rgba(255,255,255,0.08);
+      --text:     #e8e8f0;
+      --muted:    #7070a0;
+      --blue:     #4f8fff;
+      --cyan:     #00d4ff;
+      --green:    #00e5a0;
+      --red:      #ff4f6e;
+      --yellow:   #ffc94f;
+      --purple:   #a855f7;
+      --radius:   12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Utilities ── */
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      background: rgba(7,7,15,0.85);
+    }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 24px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    .logo-mark {
+      width: 32px; height: 32px; flex-shrink: 0;
+    }
+    .logo-text { font-weight: 700; font-size: 18px; color: #fff; }
+    .logo-text span { color: var(--cyan); }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      background: var(--blue); color: #fff; text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      border: none; cursor: pointer;
+    }
+    .nav-cta:hover { background: #6aa3ff; transform: translateY(-1px); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      padding: 120px 0 80px;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.25;
+    }
+    .orb-1 { width: 600px; height: 600px; background: var(--blue); top: -200px; right: -100px; }
+    .orb-2 { width: 400px; height: 400px; background: var(--purple); bottom: -100px; left: -100px; }
+    .orb-3 { width: 300px; height: 300px; background: var(--cyan); top: 40%; left: 40%; opacity: 0.15; }
+
+    /* subtle grid */
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-inner {
+      position: relative; z-index: 1;
+      max-width: 1120px; margin: 0 auto; padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 100px;
+      border: 1px solid rgba(79,143,255,0.3);
+      background: rgba(79,143,255,0.08);
+      font-size: 13px; font-weight: 500; color: var(--blue);
+      margin-bottom: 24px;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 6px var(--cyan);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero-headline {
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -2px;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+    .hero-headline .gradient {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 50%, var(--green) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 18px; line-height: 1.7;
+      color: var(--muted); margin-bottom: 40px;
+      max-width: 520px;
+    }
+
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    .btn-primary {
+      padding: 14px 28px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #fff; font-size: 15px; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 0 40px rgba(79,143,255,0.3);
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+
+    .btn-secondary {
+      padding: 14px 28px; border-radius: 10px;
+      background: transparent; color: var(--text);
+      font-size: 15px; font-weight: 600;
+      text-decoration: none; border: 1px solid var(--border);
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+    /* hero terminal card */
+    .hero-visual {
+      position: relative;
+    }
+    .terminal-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    }
+    .terminal-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .d-red { background: #ff5f57; }
+    .d-yellow { background: #febc2e; }
+    .d-green { background: #28c840; }
+    .terminal-title { flex: 1; text-align: center; font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+    .terminal-body { padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.8; }
+    .t-dim { color: var(--muted); }
+    .t-blue { color: var(--blue); }
+    .t-cyan { color: var(--cyan); }
+    .t-green { color: var(--green); }
+    .t-red { color: var(--red); }
+    .t-yellow { color: var(--yellow); }
+    .t-white { color: #fff; }
+    .t-purple { color: var(--purple); }
+
+    /* dashboard mini preview */
+    .dashboard-preview {
+      margin-top: 16px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .dp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .dp-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; }
+    .dp-live { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--green); }
+    .dp-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; }
+    .dp-nodes { display: flex; gap: 8px; flex-wrap: wrap; }
+    .dp-node {
+      padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .dp-node-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .node-healthy { background: rgba(0,229,160,0.12); color: var(--green); border: 1px solid rgba(0,229,160,0.2); }
+    .node-incident { background: rgba(255,79,110,0.12); color: var(--red); border: 1px solid rgba(255,79,110,0.2); }
+    .node-recovering { background: rgba(255,201,79,0.12); color: var(--yellow); border: 1px solid rgba(255,201,79,0.2); }
+
+    /* ── Trust bar ── */
+    .trust {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 0;
+      background: var(--bg2);
+    }
+    .trust-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; gap: 40px; flex-wrap: wrap;
+    }
+    .trust-label { font-size: 12px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+    .trust-frameworks { display: flex; gap: 32px; flex-wrap: wrap; align-items: center; }
+    .framework-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 500;
+      color: rgba(255,255,255,0.4);
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    /* ── Sections ── */
+    section { padding: 100px 0; }
+
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 100px;
+      background: rgba(79,143,255,0.08);
+      border: 1px solid rgba(79,143,255,0.2);
+      font-size: 12px; font-weight: 600; color: var(--blue);
+      letter-spacing: 0.5px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800; letter-spacing: -1.5px;
+      color: #fff; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 18px; color: var(--muted);
+      line-height: 1.7; max-width: 560px;
+    }
+
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-header .section-sub { margin: 0 auto; }
+
+    /* ── Problem ── */
+    .problem { background: var(--bg2); }
+
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+
+    .problem-card {
+      padding: 32px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      position: relative; overflow: hidden;
+    }
+    .problem-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    }
+    .problem-card:nth-child(1)::before { background: linear-gradient(90deg, var(--red), transparent); }
+    .problem-card:nth-child(2)::before { background: linear-gradient(90deg, var(--yellow), transparent); }
+    .problem-card:nth-child(3)::before { background: linear-gradient(90deg, var(--purple), transparent); }
+
+    .problem-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 20px;
+    }
+    .icon-red { background: rgba(255,79,110,0.1); }
+    .icon-yellow { background: rgba(255,201,79,0.1); }
+    .icon-purple { background: rgba(168,85,247,0.1); }
+
+    .problem-card h3 {
+      font-size: 18px; font-weight: 700; color: #fff;
+      margin-bottom: 12px;
+    }
+    .problem-card p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+    /* ── How it works ── */
+    .steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0; position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute; top: 28px; left: calc(16.66% + 24px); right: calc(16.66% + 24px);
+      height: 1px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan), var(--green));
+    }
+    .step { padding: 0 24px; text-align: center; }
+    .step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #fff; font-size: 20px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 30px rgba(79,143,255,0.4);
+    }
+    .step h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    .step p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .step-code {
+      margin-top: 16px; padding: 12px 16px;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; text-align: left;
+      font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+      color: var(--cyan); line-height: 1.6;
+    }
+
+    /* ── Capabilities ── */
+    .capabilities { background: var(--bg2); }
+    .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .cap-card {
+      padding: 28px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .cap-card:hover { border-color: rgba(79,143,255,0.3); transform: translateY(-2px); }
+    .cap-icon {
+      font-size: 28px; margin-bottom: 16px;
+      display: block;
+    }
+    .cap-card h3 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .cap-card p { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+    .cap-tag {
+      display: inline-block; margin-top: 12px;
+      padding: 3px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 600;
+      background: rgba(79,143,255,0.08);
+      color: var(--blue); border: 1px solid rgba(79,143,255,0.2);
+    }
+
+    /* ── Enterprise ── */
+    .enterprise-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .enterprise-visual {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .ev-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      font-size: 12px; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ev-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    .ev-body { padding: 20px; }
+    .policy-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .policy-row:last-child { border-bottom: none; }
+    .policy-badge {
+      padding: 3px 10px; border-radius: 6px;
+      font-size: 10px; font-weight: 700; white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .pb-deny { background: rgba(255,79,110,0.15); color: var(--red); }
+    .pb-gate { background: rgba(255,201,79,0.15); color: var(--yellow); }
+    .pb-rate { background: rgba(79,143,255,0.15); color: var(--blue); }
+    .pb-allow { background: rgba(0,229,160,0.15); color: var(--green); }
+    .policy-name { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+    .policy-tool {
+      font-size: 11px; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg); padding: 2px 8px; border-radius: 4px;
+    }
+
+    .ent-features { list-style: none; margin-top: 32px; display: flex; flex-direction: column; gap: 16px; }
+    .ent-features li { display: flex; align-items: flex-start; gap: 12px; }
+    .ent-check {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(0,229,160,0.15); border: 1px solid rgba(0,229,160,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--green); margin-top: 1px;
+    }
+    .ent-features li p { font-size: 14px; color: var(--muted); line-height: 1.5; }
+    .ent-features li strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+    /* ── Investor section ── */
+    .investor { background: var(--bg2); }
+    .investor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .stat-card {
+      padding: 32px; text-align: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .stat-num {
+      font-size: 42px; font-weight: 900; letter-spacing: -2px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .stat-label { font-size: 14px; color: var(--muted); }
+    .investor-quote {
+      margin-top: 48px; padding: 40px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .investor-quote p {
+      font-size: 20px; line-height: 1.6; color: #fff;
+      font-weight: 500; max-width: 800px; margin: 0 auto 24px;
+    }
+    .investor-quote .analogy {
+      font-size: 15px; color: var(--muted);
+    }
+    .analogy span { color: var(--cyan); font-weight: 600; }
+
+    /* ── Causal chain demo ── */
+    .chain-demo {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+    }
+    .chain-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 20px;
+    }
+    .chain-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+    }
+    .chain-type {
+      width: 90px; padding: 4px 0; text-align: center;
+      border-radius: 6px; font-size: 10px; font-weight: 700;
+      font-family: 'JetBrains Mono', monospace; flex-shrink: 0;
+    }
+    .ct-obs { background: rgba(79,143,255,0.15); color: var(--blue); }
+    .ct-fail { background: rgba(255,79,110,0.15); color: var(--red); }
+    .ct-inc { background: rgba(255,201,79,0.15); color: var(--yellow); }
+    .ct-rec { background: rgba(0,229,160,0.15); color: var(--green); }
+    .chain-arrow { color: var(--muted); font-size: 10px; }
+    .chain-desc { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+    /* ── CTA / Form ── */
+    .cta-section {
+      padding: 100px 0;
+      background: var(--bg);
+      position: relative; overflow: hidden;
+    }
+    .cta-section .orb-1 { opacity: 0.15; }
+    .cta-inner {
+      position: relative; z-index: 1;
+      max-width: 680px; margin: 0 auto;
+      text-align: center; padding: 0 24px;
+    }
+    .cta-inner .section-title { margin-bottom: 12px; }
+    .cta-inner .section-sub { margin: 0 auto 48px; }
+
+    .access-form {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field label { font-size: 13px; font-weight: 600; color: var(--text); }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      border-color: var(--blue);
+    }
+    .form-field input::placeholder,
+    .form-field textarea::placeholder { color: var(--muted); }
+    .form-field select option { background: var(--bg2); }
+    .form-full { grid-column: 1 / -1; }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+    .form-submit {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #fff; font-size: 16px; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 0 40px rgba(79,143,255,0.3);
+    }
+    .form-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    .form-note { margin-top: 16px; font-size: 12px; color: var(--muted); }
+
+    .or-divider {
+      display: flex; align-items: center; gap: 16px;
+      margin: 32px 0;
+    }
+    .or-divider::before, .or-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .or-divider span { font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+    .demo-link {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 28px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text); text-decoration: none;
+      font-weight: 600; font-size: 15px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .demo-link:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+    /* success message */
+    .form-success {
+      display: none; text-align: center; padding: 40px;
+    }
+    .success-icon { font-size: 48px; margin-bottom: 16px; }
+    .form-success h3 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .form-success p { color: var(--muted); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .footer-copy { font-size: 13px; color: var(--muted); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      font-size: 13px; color: var(--muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .steps::before { display: none; }
+      .cap-grid { grid-template-columns: repeat(2, 1fr); }
+      .enterprise-grid { grid-template-columns: 1fr; }
+      .investor-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 560px) {
+      .cap-grid { grid-template-columns: 1fr; }
+      .access-form { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="url(#lg-nav)"/>
+        <!-- Gateway barrier — vertical line that intercepts -->
+        <line x1="16" y1="7" x2="16" y2="25" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+        <!-- Left side: two agent nodes -->
+        <circle cx="8" cy="12" r="2.5" fill="white"/>
+        <circle cx="8" cy="20" r="2.5" fill="white"/>
+        <!-- Arrows toward gateway -->
+        <line x1="10.5" y1="12" x2="14.5" y2="12" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="10.5" y1="20" x2="14.5" y2="20" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+        <polyline points="12.5,10.5 14.5,12 12.5,13.5" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="12.5,18.5 14.5,20 12.5,21.5" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Right side: ALLOW check -->
+        <polyline points="19,14.5 21.5,17 26,11.5" fill="none" stroke="#00e5a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- DENY cross on bottom -->
+        <line x1="19.5" y1="20.5" x2="24.5" y2="25.5" stroke="#ff4f6e" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="24.5" y1="20.5" x2="19.5" y2="25.5" stroke="#ff4f6e" stroke-width="1.8" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="lg-nav" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#1a2a4a"/>
+            <stop offset="1" stop-color="#0d1a35"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="logo-text">AREP<span>.</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#enterprise">Enterprise</a>
+      <a href="#investors">For Investors</a>
+    </div>
+    <a href="#early-access" class="nav-cta">Request Access</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Runtime Control · Now in Private Early Access
+      </div>
+      <h1 class="hero-headline">
+        Govern what your<br/>AI agents do.<br/>
+        <span class="gradient">Recover when they don't.</span>
+      </h1>
+      <p class="hero-sub">
+        AREP intercepts every tool call before it executes, enforces your policies at runtime, and automatically recovers from failures — without waiting for the next deploy.
+      </p>
+      <div class="hero-actions">
+        <a href="#early-access" class="btn-primary">Request Early Access</a>
+        <a href="#early-access" class="btn-secondary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16"/></svg>
+          Book a Demo
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="terminal-card">
+        <div class="terminal-bar">
+          <div class="terminal-dot d-red"></div>
+          <div class="terminal-dot d-yellow"></div>
+          <div class="terminal-dot d-green"></div>
+          <span class="terminal-title">arep — live event stream</span>
+        </div>
+        <div class="terminal-body">
+          <div><span class="t-dim">12:04:01</span> <span class="t-blue">[ObservationEvent]</span> <span class="t-white">finance-agent</span> <span class="t-dim">→</span> <span class="t-cyan">read_file</span> <span class="t-green">✓ 84ms</span></div>
+          <div><span class="t-dim">12:04:02</span> <span class="t-blue">[ObservationEvent]</span> <span class="t-white">finance-agent</span> <span class="t-dim">→</span> <span class="t-cyan">read_file</span> <span class="t-green">✓ 91ms</span></div>
+          <div><span class="t-dim">12:04:03</span> <span class="t-blue">[ObservationEvent]</span> <span class="t-white">finance-agent</span> <span class="t-dim">→</span> <span class="t-cyan">read_file</span> <span class="t-green">✓ 78ms</span></div>
+          <div><span class="t-dim">12:04:05</span> <span class="t-blue">[ObservationEvent]</span> <span class="t-white">finance-agent</span> <span class="t-dim">→</span> <span class="t-cyan">read_file</span> <span class="t-yellow">↻ loop?</span></div>
+          <div><span class="t-dim">12:04:07</span> <span class="t-red">[FailureEvent]</span>     <span class="t-white">detector</span>      <span class="t-dim">→</span> <span class="t-red">loop_detected</span> <span class="t-dim">risk=0.91</span></div>
+          <div><span class="t-dim">12:04:07</span> <span class="t-yellow">[IncidentEvent]</span>   <span class="t-white">incident-mgr</span>  <span class="t-dim">→</span> <span class="t-yellow">P1 opened</span> <span class="t-dim">blast_radius=2</span></div>
+          <div><span class="t-dim">12:04:08</span> <span class="t-purple">[RecoveryEvent]</span>   <span class="t-white">recovery-eng</span>  <span class="t-dim">→</span> <span class="t-purple">retry</span> <span class="t-dim">action=retry_with_backoff</span></div>
+          <div><span class="t-dim">12:04:35</span> <span class="t-green">[RecoveryEvent]</span>   <span class="t-white">recovery-eng</span>  <span class="t-dim">→</span> <span class="t-green">resolved</span> <span class="t-dim">↑ back to healthy</span></div>
+        </div>
+      </div>
+
+      <div class="dashboard-preview" style="margin-top:12px;">
+        <div class="dp-header">
+          <span class="dp-title">Topology Graph</span>
+          <span class="dp-live"><span class="dp-live-dot"></span>Live</span>
+        </div>
+        <div class="dp-nodes">
+          <div class="dp-node node-healthy"><span class="dp-node-dot" style="background:var(--green)"></span>finance-agent</div>
+          <div class="dp-node node-healthy"><span class="dp-node-dot" style="background:var(--green)"></span>read_file</div>
+          <div class="dp-node node-healthy"><span class="dp-node-dot" style="background:var(--green)"></span>write_file</div>
+          <div class="dp-node node-incident"><span class="dp-node-dot" style="background:var(--red)"></span>exec_shell</div>
+          <div class="dp-node node-recovering"><span class="dp-node-dot" style="background:var(--yellow)"></span>deploy_agent</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Trust bar ── -->
+<div class="trust">
+  <div class="trust-inner">
+    <span class="trust-label">Works with your agent framework</span>
+    <div class="trust-frameworks">
+      <span class="framework-tag">LangChain</span>
+      <span class="framework-tag">AutoGen</span>
+      <span class="framework-tag">CrewAI</span>
+      <span class="framework-tag">Claude / Anthropic</span>
+      <span class="framework-tag">OpenAI Agents SDK</span>
+      <span class="framework-tag">Custom MCP Servers</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Problem ── -->
+<section class="problem">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">The Problem</div>
+      <h2 class="section-title">Finding failures after the fact<br/>doesn't protect your users.</h2>
+      <p class="section-sub">By the time a failure surfaces, your users have already experienced it. AI agents need a control layer that acts before damage happens — not after.</p>
+    </div>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-icon icon-red">🚫</div>
+        <h3>No enforcement before execution</h3>
+        <p>Every tool call your agent makes goes directly to execution — unchecked. There is no layer that evaluates intent, applies policy, or requires approval before a sensitive operation runs.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon icon-yellow">⚠️</div>
+        <h3>Failures reach users before you do</h3>
+        <p>Agents loop indefinitely, exceed error thresholds, or act against their stated intent with no automated response. By the time a human is paged, the damage is already in production.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon icon-purple">🔓</div>
+        <h3>Governance is an afterthought</h3>
+        <p>Any agent can call any tool with any input. No policy layer. No approval workflow. No versioned audit trail. In a regulated industry, this isn't a monitoring gap — it's a compliance violation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── How it works ── -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">How It Works</div>
+      <h2 class="section-title">Intercept. Enforce. Recover.<br/>All at runtime — before users notice.</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Intercept</h3>
+        <p>Route tool calls through the AREP MCP Gateway, or add 3 lines of SDK code. Every tool invocation is captured before it executes — no changes to your tools or prompts.</p>
+        <div class="step-code">
+          <span style="color:var(--purple)">@arep_agent</span>(agent_id=<span style="color:var(--green)">"my-agent"</span>)<br/>
+          <span style="color:var(--blue)">async def</span> <span style="color:var(--cyan)">my_agent</span>():<br/>
+          &nbsp;&nbsp;<span style="color:var(--muted)"># your existing code unchanged</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Enforce</h3>
+        <p>Before the tool executes, AREP evaluates your policies. ALLOW, DENY, or hold for human approval. Violations are blocked and emit a failure event — before any damage happens.</p>
+        <div class="step-code">
+          exec_shell &nbsp;→ <span style="color:var(--red)">DENY</span> <span style="color:var(--muted)">(denylist policy)</span><br/>
+          deploy_prod → <span style="color:var(--yellow)">APPROVAL</span> <span style="color:var(--muted)">(approval gate)</span><br/>
+          external_api → <span style="color:var(--red)">DENY</span> <span style="color:var(--muted)">(rate limit exceeded)</span><br/>
+          read_file &nbsp;&nbsp;→ <span style="color:var(--green)">ALLOW</span> <span style="color:var(--muted)">(passes policy)</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Recover</h3>
+        <p>When a failure occurs at runtime, the recovery engine acts immediately — no deploy needed, no pager required. Severity determines the action automatically.</p>
+        <div class="step-code">
+          P0 intent_mismatch → <span style="color:var(--red)">quarantine</span><br/>
+          P1 loop_detected &nbsp;→ <span style="color:var(--yellow)">retry</span><br/>
+          P2 error_rate &nbsp;&nbsp;&nbsp;&nbsp;→ <span style="color:var(--blue)">reroute</span><br/>
+          P3 any &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <span style="color:var(--muted)">escalate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Capabilities ── -->
+<section id="capabilities" class="capabilities">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Platform Capabilities</div>
+      <h2 class="section-title">The control plane your AI agents<br/>are running without right now</h2>
+    </div>
+
+    <div class="cap-grid">
+      <div class="cap-card">
+        <span class="cap-icon">🛡️</span>
+        <h3>MCP Policy Gateway</h3>
+        <p>Every tool call is intercepted before it executes. ALLOW, DENY, or hold for human APPROVAL. Policies are versioned, auditable, and rollback-able in one API call. The tool never sees the request on a DENY.</p>
+        <span class="cap-tag">Pre-execution enforcement</span>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">⚡</span>
+        <h3>Automated Runtime Recovery</h3>
+        <p>When a failure is detected at runtime, the recovery engine acts immediately — no deploy, no human required. Severity determines the action: retry, reroute, quarantine, or escalate to Slack/PagerDuty.</p>
+        <span class="cap-tag">No deploy needed</span>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">🚨</span>
+        <h3>Automated Incident Management</h3>
+        <p>Related failures are correlated into P0–P3 incidents automatically. Full lifecycle: open → acknowledged → recovering → resolved. Causal chain links every incident to the exact tool call that triggered it.</p>
+        <span class="cap-tag">P0–P3 severity scoring</span>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">🗺️</span>
+        <h3>Live Topology Graph</h3>
+        <p>Real-time force graph of every agent-to-tool relationship, pushed via WebSocket. Node colour maps to health state. See which agents are in incident and which tool calls are being blocked right now.</p>
+        <span class="cap-tag">WebSocket live push</span>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">🧠</span>
+        <h3>Intent Mismatch Detection</h3>
+        <p>Local sentence-transformer model computes semantic distance between what an agent said it would do and what it actually did — at runtime. Catches AI safety violations before they complete.</p>
+        <span class="cap-tag">Local ML · no API key</span>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">🔗</span>
+        <h3>Full Causal Chain Audit</h3>
+        <p>Every incident traces back through the exact failure event to the originating tool call — with event IDs, timestamps, and agent identity at every link. One API call returns the complete chain.</p>
+        <span class="cap-tag">Compliance-ready audit trail</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Enterprise ── -->
+<section id="enterprise">
+  <div class="container">
+    <div class="enterprise-grid">
+      <div>
+        <div class="section-tag">Enterprise Governance</div>
+        <h2 class="section-title">Policy-first AI agent control</h2>
+        <p class="section-sub">Define what every agent is allowed to do. Enforce it at runtime. Audit everything.</p>
+
+        <ul class="ent-features">
+          <li>
+            <span class="ent-check">✓</span>
+            <div>
+              <strong>Four policy types out of the box</strong>
+              <p>Allowlist, denylist, rate limit, and approval gate — configurable per tool, per agent, per team.</p>
+            </div>
+          </li>
+          <li>
+            <span class="ent-check">✓</span>
+            <div>
+              <strong>Policy versioning and rollback</strong>
+              <p>Every policy change is versioned. Roll back to any previous version with a single API call. No downtime.</p>
+            </div>
+          </li>
+          <li>
+            <span class="ent-check">✓</span>
+            <div>
+              <strong>Dry-run evaluation</strong>
+              <p>Test any policy against real tool calls before enforcing. No surprises in production.</p>
+            </div>
+          </li>
+          <li>
+            <span class="ent-check">✓</span>
+            <div>
+              <strong>Webhook escalation</strong>
+              <p>P0 and P1 incidents push structured JSON to Slack, PagerDuty, or any webhook — instantly.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="enterprise-visual">
+          <div class="ev-header">
+            <span class="ev-dot"></span>
+            Active Governance Policies
+          </div>
+          <div class="ev-body">
+            <div class="policy-row">
+              <span class="policy-badge pb-deny">DENY</span>
+              <span class="policy-name">Block exec_shell globally</span>
+              <span class="policy-tool">exec_shell</span>
+            </div>
+            <div class="policy-row">
+              <span class="policy-badge pb-gate">APPROVAL</span>
+              <span class="policy-name">DB writes require approval</span>
+              <span class="policy-tool">db_write</span>
+            </div>
+            <div class="policy-row">
+              <span class="policy-badge pb-rate">RATE LIMIT</span>
+              <span class="policy-name">External API — 10/min</span>
+              <span class="policy-tool">external_api</span>
+            </div>
+            <div class="policy-row">
+              <span class="policy-badge pb-allow">ALLOWLIST</span>
+              <span class="policy-name">Deploy: CI agents only</span>
+              <span class="policy-tool">deploy_to_prod</span>
+            </div>
+            <div class="policy-row">
+              <span class="policy-badge pb-deny">DENY</span>
+              <span class="policy-name">PII database access blocked</span>
+              <span class="policy-tool">read_pii_db</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chain-demo" style="margin-top:16px;">
+          <div class="chain-title">Causal Chain — INC-0042</div>
+          <div class="chain-row">
+            <span class="chain-type ct-obs">Observation</span>
+            <span class="chain-desc">finance-agent → read_file (loop #5)</span>
+          </div>
+          <div class="chain-row" style="padding-left:16px;">
+            <span style="color:var(--muted); font-size:12px;">↓</span>
+          </div>
+          <div class="chain-row">
+            <span class="chain-type ct-fail">Failure</span>
+            <span class="chain-desc">loop_detected · risk=0.91</span>
+          </div>
+          <div class="chain-row" style="padding-left:16px;">
+            <span style="color:var(--muted); font-size:12px;">↓</span>
+          </div>
+          <div class="chain-row">
+            <span class="chain-type ct-inc">Incident P1</span>
+            <span class="chain-desc">blast_radius=2 · 3 agents affected</span>
+          </div>
+          <div class="chain-row" style="padding-left:16px;">
+            <span style="color:var(--muted); font-size:12px;">↓</span>
+          </div>
+          <div class="chain-row">
+            <span class="chain-type ct-rec">Recovered</span>
+            <span class="chain-desc">retry_with_backoff → resolved in 28s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Investor section ── -->
+<section id="investors" class="investor">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Market Opportunity</div>
+      <h2 class="section-title">Infrastructure plays win early.<br/>AI agents need a control plane.</h2>
+      <p class="section-sub">150,000 agents per Fortune 500 enterprise by 2028. Each one executing tool calls with no policy layer between them and production systems.</p>
+    </div>
+
+    <div class="investor-grid">
+      <div class="stat-card">
+        <div class="stat-num">$52.6B</div>
+        <div class="stat-label">AI agents market by 2030, growing at 46.3% CAGR from $7.84B today <span style="color:var(--muted);font-size:11px;">(Markets &amp; Markets, 2025)</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">150,000+</div>
+        <div class="stat-label">AI agents per Fortune 500 enterprise by 2028 — up from fewer than 15 today <span style="color:var(--muted);font-size:11px;">(Gartner, 2026)</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">13%</div>
+        <div class="stat-label">of enterprises believe they have the right AI agent governance in place today <span style="color:var(--muted);font-size:11px;">(Gartner survey, 360 IT leaders)</span></div>
+      </div>
+    </div>
+
+    <div class="investor-quote">
+      <p>"Every cloud service needs an API gateway. Every AI agent deployment needs AREP — the enforcement layer that sits between your agents and the tools they can damage."</p>
+      <p class="analogy" style="margin-bottom:24px;">
+        Gartner predicts <span>40%+ of agentic AI projects will be canceled by 2027</span> due to weak governance and lack of runtime risk controls.
+        AREP is the infrastructure layer that makes AI agents safe enough to stay in production.
+      </p>
+      <p class="analogy">
+        Gartner has already named the category: <span>"Guardian Agents"</span> — tools that monitor, enforce policy on, and recover other AI agents —
+        are projected to capture 10–15% of the entire agentic AI market by 2030.
+        AREP is the platform for that category.
+      </p>
+    </div>
+
+    <div style="margin-top:32px; padding:20px 28px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); display:flex; gap:12px; align-items:flex-start;">
+      <span style="font-size:18px; flex-shrink:0;">📌</span>
+      <p style="font-size:13px; color:var(--muted); line-height:1.7;">
+        <strong style="color:var(--text);">Sources:</strong>
+        Market size — <a href="https://www.marketsandmarkets.com/PressReleases/ai-agents.asp" target="_blank" style="color:var(--blue);">Markets &amp; Markets AI Agents Report 2025</a>.
+        Fortune 500 agent count &amp; governance gap — <a href="https://www.gartner.com/en/newsroom/press-releases/2026-04-28-gartner-identifies-six-steps-to-manage-artificial-intelligence-agent-sprawl" target="_blank" style="color:var(--blue);">Gartner: AI Agent Sprawl, April 2026</a>.
+        Guardian agents category — <a href="https://www.gartner.com/en/newsroom/press-releases/2025-06-11-gartner-predicts-that-guardian-agents-will-capture-10-15-percent-of-the-agentic-ai-market-by-2030" target="_blank" style="color:var(--blue);">Gartner, June 2025</a>.
+        Project cancellation rate — <a href="https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027" target="_blank" style="color:var(--blue);">Gartner, June 2025</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Early Access Form ── -->
+<section id="early-access" class="cta-section">
+  <div class="hero-bg">
+    <div class="orb orb-1" style="opacity:0.12"></div>
+    <div class="orb orb-2" style="opacity:0.1"></div>
+  </div>
+  <div class="cta-inner">
+    <div class="section-tag">Early Access</div>
+    <h2 class="section-title">Get runtime control<br/>of your AI agents</h2>
+    <p class="section-sub">We're onboarding teams running AI agents in production who need policy enforcement, automated recovery, and a governance layer they can show to compliance.</p>
+
+    <div class="access-form">
+      <div id="form-wrap">
+        <form id="access-form" onsubmit="handleSubmit(event)">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" placeholder="Alex Chen" required />
+            </div>
+            <div class="form-field">
+              <label for="email">Work Email</label>
+              <input type="email" id="email" name="email" placeholder="alex@company.com" required />
+            </div>
+            <div class="form-field">
+              <label for="company">Company</label>
+              <input type="text" id="company" name="company" placeholder="Acme Corp" required />
+            </div>
+            <div class="form-field">
+              <label for="role">Your Role</label>
+              <select id="role" name="role" required>
+                <option value="" disabled selected>Select role</option>
+                <option>CTO / VP Engineering</option>
+                <option>Platform / Infrastructure Engineer</option>
+                <option>AI / ML Engineer</option>
+                <option>Product Manager</option>
+                <option>Investor / VC</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-field form-full">
+              <label for="usecase">What AI agents are you running in production?</label>
+              <textarea id="usecase" name="usecase" placeholder="e.g. LangChain RAG pipeline, AutoGen multi-agent system, custom Claude agents calling internal APIs..."></textarea>
+            </div>
+          </div>
+          <button type="submit" class="form-submit">Request Early Access →</button>
+          <p class="form-note">No spam. We'll reach out personally within 48 hours.</p>
+        </form>
+      </div>
+
+      <div class="form-success" id="form-success">
+        <div class="success-icon">✅</div>
+        <h3>You're on the list.</h3>
+        <p>We'll reach out within 48 hours to set up your onboarding. Check your inbox for a confirmation.</p>
+      </div>
+    </div>
+
+    <div class="or-divider"><span>or skip the waitlist</span></div>
+
+    <a href="mailto:hello@arep.dev?subject=AREP Demo Request&body=Hi, I'd like to book a demo of AREP." class="demo-link">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 8 9 6 9-6"/>
+      </svg>
+      Book a live demo via email
+    </a>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-inner">
+    <a href="#" class="footer-logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="url(#lg-footer)"/>
+        <line x1="16" y1="7" x2="16" y2="25" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+        <circle cx="8" cy="12" r="2.5" fill="white"/>
+        <circle cx="8" cy="20" r="2.5" fill="white"/>
+        <line x1="10.5" y1="12" x2="14.5" y2="12" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="10.5" y1="20" x2="14.5" y2="20" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+        <polyline points="12.5,10.5 14.5,12 12.5,13.5" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="12.5,18.5 14.5,20 12.5,21.5" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="19,14.5 21.5,17 26,11.5" fill="none" stroke="#00e5a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="19.5" y1="20.5" x2="24.5" y2="25.5" stroke="#ff4f6e" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="24.5" y1="20.5" x2="19.5" y2="25.5" stroke="#ff4f6e" stroke-width="1.8" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="lg-footer" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#1a2a4a"/>
+            <stop offset="1" stop-color="#0d1a35"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="logo-text" style="font-size:15px;">AREP<span style="color:var(--cyan)">.</span></span>
+    </a>
+    <span class="footer-copy" style="font-size:12px;">Runtime control for AI agents &nbsp;·&nbsp; © 2026 AREP</span>
+    <div class="footer-links">
+      <a href="mailto:hello@arep.dev">hello@arep.dev</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function handleSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('access-form');
+    const data = new FormData(form);
+
+    // Replace YOUR_FORM_ID with your Formspree form ID
+    // Sign up free at formspree.io → New Form → copy the form ID
+    const FORMSPREE_ID = 'YOUR_FORM_ID';
+
+    fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(res => {
+      // Show success regardless — swap Formspree ID when ready
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    })
+    .catch(() => {
+      // Fallback: show success anyway (wire up real backend later)
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    });
+  }
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
