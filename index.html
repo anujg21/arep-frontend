@@ -1114,26 +1114,33 @@
   function handleSubmit(e) {
     e.preventDefault();
     const form = document.getElementById('access-form');
+    const btn  = form.querySelector('.form-submit');
     const data = new FormData(form);
 
-    // Replace YOUR_FORM_ID with your Formspree form ID
-    // Sign up free at formspree.io → New Form → copy the form ID
-    const FORMSPREE_ID = 'mvzygzdv';
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
 
-    fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+    fetch('https://formspree.io/f/mvzygzdv', {
       method: 'POST',
       body: data,
       headers: { 'Accept': 'application/json' }
     })
     .then(res => {
-      // Show success regardless — swap Formspree ID when ready
-      document.getElementById('form-wrap').style.display = 'none';
-      document.getElementById('form-success').style.display = 'block';
+      if (res.ok) {
+        document.getElementById('form-wrap').style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+      } else {
+        res.json().then(data => {
+          btn.disabled = false;
+          btn.textContent = 'Request Early Access →';
+          alert(data.error || 'Something went wrong. Please email us at hello@arep.dev');
+        });
+      }
     })
     .catch(() => {
-      // Fallback: show success anyway (wire up real backend later)
-      document.getElementById('form-wrap').style.display = 'none';
-      document.getElementById('form-success').style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Request Early Access →';
+      alert('Network error. Please email us directly at hello@arep.dev');
     });
   }
 
