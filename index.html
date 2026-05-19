@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AREP — Agentic Reliability Engineering Platform</title>
-  <meta name="description" content="The reliability layer for autonomous AI agents. Observe every action, detect failures automatically, enforce policy before any tool executes." />
-  <meta property="og:title" content="AREP — Agentic Reliability Engineering Platform" />
-  <meta property="og:description" content="Site Reliability Engineering for the AI Agent Era." />
+  <title>AgentGuardian — Runtime Control for AI Agents</title>
+  <meta name="description" content="Govern what your AI agents do. Recover when they don't. AgentGuardian enforces policy before any tool executes and recovers automatically when agents fail in production." />
+  <meta property="og:title" content="AgentGuardian — Runtime Control for AI Agents" />
+  <meta property="og:description" content="Govern what your AI agents do. Recover when they don't." />
   <meta property="og:type" content="website" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -66,7 +66,7 @@
     .logo-mark {
       width: 32px; height: 32px; flex-shrink: 0;
     }
-    .logo-text { font-weight: 700; font-size: 18px; color: #fff; }
+    .logo-text { font-weight: 700; font-size: 18px; color: #fff; letter-spacing: -0.3px; }
     .logo-text span { color: var(--cyan); }
     .nav-links { display: flex; align-items: center; gap: 32px; }
     .nav-links a {
@@ -636,7 +636,7 @@
           </linearGradient>
         </defs>
       </svg>
-      <span class="logo-text">AREP<span>.</span></span>
+      <span class="logo-text">Agent<span>Guardian</span></span>
     </a>
     <div class="nav-links">
       <a href="#how-it-works">How it works</a>
@@ -659,14 +659,14 @@
     <div class="hero-content">
       <div class="hero-badge">
         <span class="hero-badge-dot"></span>
-        Runtime Control · Now in Private Early Access
+        Now in Private Early Access
       </div>
       <h1 class="hero-headline">
         Govern what your<br/>AI agents do.<br/>
         <span class="gradient">Recover when they don't.</span>
       </h1>
       <p class="hero-sub">
-        AREP intercepts every tool call before it executes, enforces your policies at runtime, and automatically recovers from failures — without waiting for the next deploy.
+        AgentGuardian intercepts every tool call before it executes, enforces your policies at runtime, and automatically recovers from failures — without waiting for the next deploy.
       </p>
       <div class="hero-actions">
         <a href="#early-access" class="btn-primary">Request Early Access</a>
@@ -683,7 +683,7 @@
           <div class="terminal-dot d-red"></div>
           <div class="terminal-dot d-yellow"></div>
           <div class="terminal-dot d-green"></div>
-          <span class="terminal-title">arep — live event stream</span>
+          <span class="terminal-title">agentguardian · arep runtime · live stream</span>
         </div>
         <div class="terminal-body">
           <div><span class="t-dim">12:04:01</span> <span class="t-blue">[ObservationEvent]</span> <span class="t-white">finance-agent</span> <span class="t-dim">→</span> <span class="t-cyan">read_file</span> <span class="t-green">✓ 84ms</span></div>
@@ -770,7 +770,7 @@
       <div class="step">
         <div class="step-num">1</div>
         <h3>Intercept</h3>
-        <p>Route tool calls through the AREP MCP Gateway, or add 3 lines of SDK code. Every tool invocation is captured before it executes — no changes to your tools or prompts.</p>
+        <p>Route tool calls through the AgentGuardian gateway, or add 3 lines of SDK code using the AREP runtime. Every tool invocation is captured before it executes — no changes to your tools or prompts.</p>
         <div class="step-code">
           <span style="color:var(--purple)">@arep_agent</span>(agent_id=<span style="color:var(--green)">"my-agent"</span>)<br/>
           <span style="color:var(--blue)">async def</span> <span style="color:var(--cyan)">my_agent</span>():<br/>
@@ -814,15 +814,15 @@
     <div class="cap-grid">
       <div class="cap-card">
         <span class="cap-icon">🛡️</span>
-        <h3>MCP Policy Gateway</h3>
+        <h3>Policy Gateway</h3>
         <p>Every tool call is intercepted before it executes. ALLOW, DENY, or hold for human APPROVAL. Policies are versioned, auditable, and rollback-able in one API call. The tool never sees the request on a DENY.</p>
-        <span class="cap-tag">Pre-execution enforcement</span>
+        <span class="cap-tag">AREP Gateway · Pre-execution</span>
       </div>
       <div class="cap-card">
         <span class="cap-icon">⚡</span>
         <h3>Automated Runtime Recovery</h3>
         <p>When a failure is detected at runtime, the recovery engine acts immediately — no deploy, no human required. Severity determines the action: retry, reroute, quarantine, or escalate to Slack/PagerDuty.</p>
-        <span class="cap-tag">No deploy needed</span>
+        <span class="cap-tag">AREP Runtime · No deploy needed</span>
       </div>
       <div class="cap-card">
         <span class="cap-icon">🚨</span>
@@ -986,7 +986,7 @@
     </div>
 
     <div class="investor-quote">
-      <p>"Every cloud service needs an API gateway. Every AI agent deployment needs AREP — the enforcement layer that sits between your agents and the tools they can damage."</p>
+      <p>"Every cloud service needs an API gateway. Every AI agent deployment needs AgentGuardian — the enforcement layer that sits between your agents and the tools they can damage."</p>
       <p class="analogy" style="margin-bottom:24px;">
         Gartner predicts <span>40%+ of agentic AI projects will be canceled by 2027</span> due to weak governance and lack of runtime risk controls.
         AREP is the infrastructure layer that makes AI agents safe enough to stay in production.
@@ -994,7 +994,7 @@
       <p class="analogy">
         Gartner has already named the category: <span>"Guardian Agents"</span> — tools that monitor, enforce policy on, and recover other AI agents —
         are projected to capture 10–15% of the entire agentic AI market by 2030.
-        AREP is the platform for that category.
+        AgentGuardian is the platform for that category.
       </p>
     </div>
 
@@ -1101,11 +1101,11 @@
           </linearGradient>
         </defs>
       </svg>
-      <span class="logo-text" style="font-size:15px;">AREP<span style="color:var(--cyan)">.</span></span>
+      <span class="logo-text" style="font-size:15px;">Agent<span style="color:var(--cyan)">Guardian</span></span>
     </a>
-    <span class="footer-copy" style="font-size:12px;">Runtime control for AI agents &nbsp;·&nbsp; © 2026 AREP</span>
+    <span class="footer-copy" style="font-size:12px;">Runtime control for AI agents &nbsp;·&nbsp; © 2026 AgentGuardian</span>
     <div class="footer-links">
-      <a href="mailto:hello@arep.dev">hello@arep.dev</a>
+      <a href="mailto:hello@agentguardian.tech">hello@agentguardian.tech</a>
     </div>
   </div>
 </footer>
@@ -1133,14 +1133,14 @@
         res.json().then(data => {
           btn.disabled = false;
           btn.textContent = 'Request Early Access →';
-          alert(data.error || 'Something went wrong. Please email us at hello@arep.dev');
+          alert(data.error || 'Something went wrong. Please email us at hello@agentguardian.tech');
         });
       }
     })
     .catch(() => {
       btn.disabled = false;
       btn.textContent = 'Request Early Access →';
-      alert('Network error. Please email us directly at hello@arep.dev');
+      alert('Network error. Please email us directly at hello@agentguardian.tech');
     });
   }
 
