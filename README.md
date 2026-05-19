@@ -1,6 +1,6 @@
-# AREP — Landing Page
+# AgentGuardian — Landing Page
 
-Marketing and early access site for AREP.
+Marketing and early access site for [AgentGuardian](https://agentguardian.tech).
 
 ## Preview locally
 
