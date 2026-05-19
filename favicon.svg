@@ -1,0 +1,25 @@
+<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="44" height="44" rx="10" fill="#07080f"/>
+
+  <!-- Three input nodes (agents arriving at the enforcement boundary) -->
+  <circle cx="7" cy="13" r="2.4" fill="#00d4ff"/>
+  <circle cx="7" cy="22" r="2.4" fill="#00d4ff"/>
+  <circle cx="7" cy="31" r="2.4" fill="#4f8fff" fill-opacity="0.45"/>
+
+  <!-- Input paths toward the gateway -->
+  <line x1="9.4" y1="13" x2="19" y2="13" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="9.4" y1="22" x2="19" y2="22" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="9.4" y1="31" x2="19" y2="31" stroke="#4f8fff" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4"/>
+
+  <!-- Enforcement boundary — the guardian layer -->
+  <rect x="19" y="7.5" width="2.8" height="29" rx="1.4" fill="white"/>
+
+  <!-- Output paths (only two pass through — third is stopped) -->
+  <line x1="21.8" y1="13" x2="36.6" y2="13" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="21.8" y1="22" x2="36.6" y2="22" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Output nodes -->
+  <circle cx="37" cy="13" r="2.4" fill="#00d4ff"/>
+  <circle cx="37" cy="22" r="2.4" fill="#00d4ff"/>
+</svg>
